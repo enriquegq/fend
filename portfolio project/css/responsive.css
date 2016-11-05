@@ -1,0 +1,24 @@
+
+@media only screen and (max-width: 640px) {
+    .header_logo {
+        height: 40px;
+    }
+
+    #user_info {
+        padding-top: 15px;
+    }
+    
+    #user_info h1{
+        font-size: 25px;
+    }
+    
+    .project{
+        margin: 0 auto 25px auto;
+        width: 100%;
+    }
+    
+    .mobile_hidden{
+        display: none;
+    }
+    
+}
