@@ -1,12 +1,12 @@
 /* OVERLAY removed */
 @media only screen and (max-width: 960px) {
-    .project{
+    .project {
         margin: 0 auto 25px auto;
         min-width: 320px;
         flex: 0 1 320px;
     }
 
-    .overlay{
+    .overlay {
         position: relative;
         opacity: 1;
         background-color: transparent;
@@ -14,10 +14,10 @@
         transition: none;
     }
 
-    .overlay a{
+    .overlay a {
         text-decoration: underline;
         display: inline-block;
-        color:#000;
+        color: #000;
         border: none;
         opacity: 1;
         -webkit-transition: none;
@@ -37,18 +37,18 @@
         padding-top: 15px;
     }
     
-    #user_info h1{
+    #user_info h1 {
         font-size: 25px;
     }
     
-    .mobile_hidden{
+    .mobile_hidden {
         display: none;
     }
 }
 
 /* (Just in case) project size reduced */
 @media only screen and (max-width: 350px) {
-    .project{
+    .project {
         min-width: 100%;
     }
 }
