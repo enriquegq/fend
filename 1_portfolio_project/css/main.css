@@ -113,10 +113,14 @@ ul#projects{
     list-style: none;
     padding: 0;
     justify-content: space-between;
+    -webkit-flex-direction: row;
+    -webkit-flex-wrap: wrap;
 }
 
 .project{
     float: left;
+    -webkit-flex: 0 1 300px;
+    flex: 0 1 300px;
     min-width: 300px;
     text-align: center;
     margin-bottom: 25px;

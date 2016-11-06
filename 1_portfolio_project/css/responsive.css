@@ -3,6 +3,7 @@
     .project{
         margin: 0 auto 25px auto;
         min-width: 320px;
+        flex: 0 1 320px;
     }
 
     .overlay{
