@@ -1,3 +1,4 @@
+/* OVERLAY removed */
 @media only screen and (max-width: 960px) {
     .project{
         margin: 0 auto 25px auto;
@@ -25,6 +26,7 @@
     }
 }
 
+/* Changes in header */
 @media only screen and (max-width: 640px) {
     .header_logo {
         height: 40px;
@@ -43,6 +45,7 @@
     }
 }
 
+/* (Just in case) project size reduced */
 @media only screen and (max-width: 350px) {
     .project{
         min-width: 100%;
