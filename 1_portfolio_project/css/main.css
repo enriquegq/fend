@@ -94,6 +94,10 @@ header {
     margin-top: 10px;
 }
 
+#featured_image img {
+    width: 100%;
+}
+
 
 /* List of all projects */
 .content {
