@@ -40,9 +40,9 @@
     #user_info h1 {
         font-size: 25px;
     }
-    
-    .mobile_hidden {
-        display: none;
+
+    #user_info h4 {
+        font-size: 12px;
     }
 }
 
