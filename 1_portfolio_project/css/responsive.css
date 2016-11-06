@@ -15,7 +15,7 @@
     }
 
     .overlay a{
-        text-decoration: none;
+        text-decoration: underline;
         display: inline-block;
         color:#000;
         border: none;
@@ -23,6 +23,7 @@
         -webkit-transition: none;
         transition: none;
         margin: auto;
+        cursor: pointer;
     }
 }
 
