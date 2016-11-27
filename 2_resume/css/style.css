@@ -278,6 +278,12 @@ span {
   }
 }
 
+@media only screen and (max-width: 550px) {
+  h1 {
+    width: 200px;
+  }
+}
+
 @media only screen and (max-width: 450px) {
   #lets-connect {
     margin-top: 20%;
