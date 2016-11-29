@@ -26,7 +26,7 @@ var bio = {
 
         $("#header").prepend(formattedRole);
         $("#header").prepend(formattedName);
-        // $("#header").append(formattedPic);
+        $("#header").append(formattedPic);
         $("#header").append(formattedWelcomeMsg);
 
         var formattedSkill = "";

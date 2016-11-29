@@ -229,10 +229,6 @@ span {
 }
 
 @media only screen and (max-width:900px) {
-  .biopic {
-    width: 175px;
-  }
-
   h1 {
     width: 400px;
   }
