@@ -27,5 +27,4 @@ Once the **index.html** is loaded, you will see different elements on the page:
 The main goal of the *player* is to get from the grass to the water without having a collision with the bugs. To do so, you will need to move it, using the arrow keys on your keyboard (:arrow_up:, :arrow_down:, :arrow_left: and :arrow_right:).
 You can move the player around the canvas in any direction as long as it does not cross the limits.
 
-If the *player* gets to the water safe, the *Victory* :white_check_mark: score will increase and it will reset the position of the *player* to the initial position.
-However, if the *player* gets into the way of some bug, the *Death* :skull: score will increase and also will reset the position to the initial one.
+If the *player* gets to the water safe, the *Victory* :white_check_mark: score will increase and it will reset the position of the *player* to the initial position. However, if the *player* gets into the way of some bug, the *Death* :skull: score will increase and also will reset the position to the initial one.
