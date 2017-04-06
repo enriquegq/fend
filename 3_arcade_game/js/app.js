@@ -78,12 +78,12 @@ var Player = function() {
     this.victory = 0;
     this.death = 0;
     this.resetPosition();
-}
+};
 
 // Updates the current box varible related to the position of the player
 Player.prototype.update = function() {
     this.currentBox = [Math.floor(this.x / BOX_WIDTH), Math.floor(this.y / BOX_HEIGHT)];
-}
+};
 
 // Updates the position of the player based on a normal movement or a victory
 Player.prototype.move = function (x, y) {
@@ -98,27 +98,27 @@ Player.prototype.move = function (x, y) {
             this.y = y;
         }
     }
-}
+};
 
 // Gets the player to the initial position
 Player.prototype.resetPosition = function() {
     this.x = BOX_WIDTH * 2;
     this.y = (BOX_HEIGHT * (NUM_ROWS - 1)) - OFFSET;
-}
+};
 
 // Handles the victory of the player
 Player.prototype.win = function() {
     this.resetPosition();
     this.victory++;
     victory.innerHTML = this.victory;
-}
+};
 
 // Handles the death of the player
 Player.prototype.die = function() {
     this.resetPosition();
     this.death++;
     death.innerHTML = this.death;
-}
+};
 
 // Renders the player
 Player.prototype.render = function() {
@@ -166,7 +166,7 @@ function initGame() {
     death = document.getElementById("death");
     initEnemies();
     player = new Player();
-    //player.resetPosition();
+
     // This listens for key presses and sends the keys to your
     // Player.handleInput() method. You don't need to modify this.
     document.addEventListener('keyup', function(e) {
