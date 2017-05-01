@@ -421,6 +421,7 @@ var resizePizzas = function(size) {
 
   changeSliderLabel(size);
 
+  // determineDx was removed
   // Changes the slider value to a percent width
   function sizeSwitcher (size) {
     switch(size) {
@@ -436,12 +437,15 @@ var resizePizzas = function(size) {
   }
 
   // Iterates through pizza elements on the page and changes their widths
+  // All calculations have been moved out the loop
   function changePizzaSizes(size) {
     var pizzaContainer = document.querySelectorAll(".randomPizzaContainer");
     var offset;
+    // We take the offsetWidth of 1 element
     if (pizzaContainer.length>0) {
       offset = pizzaContainer[0].offsetWidth;
     }
+    // Code from the previous determineDx method included here
     var windowWidth = document.querySelector("#randomPizzas").offsetWidth;
     var newSize = (sizeSwitcher(size) - (offset/windowWidth))*windowWidth;
     var newWidth = (offset + newSize) + 'px';
@@ -532,5 +536,6 @@ document.addEventListener('DOMContentLoaded', function() {
     elem.style.top = (Math.floor(i / cols) * s) + 'px';
     document.querySelector("#movingPizzas1").appendChild(elem);
   }
+  // updatePositions wrapped into a requestAnimationFrame
   window.requestAnimationFrame(updatePositions);
 });
