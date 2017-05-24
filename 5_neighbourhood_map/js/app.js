@@ -1,6 +1,3 @@
-// var map;
-// var athensCenter = {lat: 37.9715323, lng: 23.7235605};
-
 // This function takes in a COLOR, and then creates a new marker
 // icon of that color. The icon will be 21 px wide by 34 high, have an origin
 // of 0, 0 and be anchored at 10, 34).
@@ -78,72 +75,12 @@ var Location = function(poi, id){
     });
 };
 
-// function populateInfoWindow(location) {
-//     var wikiUrlLocation = model.wikiURL;
-//         wikiUrlLocation += location.title;
-//         wikiUrlLocation += model.wikiURLFormat;
-
-//     var wikiArticle;
-
-//     ViewModel.infoWindow.setContent('<div id="infoWindow">' + location.title + '</div>');
-
-//     var wikiRequestTimeout = setTimeout(function(){
-//         ViewModel.infoWindow.setContent('<div>failed to get wikipedia resources</div>');
-//     }, 8000);
-
-//     $.ajax({
-//         url: wikiUrlLocation,
-//         dataType: "jsonp",
-//         success: function(response) {
-//             var info = '<ul>';
-//             var articleList = response[1];
-//             for (var i=0; i<articleList.length; i++) {
-//                 wikiArticle = articleList[i];
-//                 var url = 'http://en.wikipedia.org/wiki/' + wikiArticle;
-//                 // $wikiElem.append(
-//                 //     '<li><a href="' + url + '">' + wikiArticle + '</a>'
-//                 // );
-//                 info += '<li><a href="' + url + '">' + wikiArticle + '</a>';
-//             }
-//             info += '</ul>';
-
-//             ViewModel.infoWindow.setContent('<div id="infoWindow">' + location.title + info + '</div>');
-//             clearTimeout(wikiRequestTimeout);
-//         }
-//     });
-//     //accesstoken: 7926454.f90bbad.467ffd88eff0449e938e87b4afb51980
-//     var locationUrl = 'https://api.500px.com/v1/photos/search?image_size=2&' + 
-//         'geo=37.971546,23.726718,1km'+
-//         '&consumer_key=NS30nYHSifLg8tBHr00GbuZGvnr4iqX44lqB17Nn';//feature=popular&
-
-//     self.pictures = [];
-//     $.ajax({
-//         url: locationUrl,
-//         type: "GET",
-//         success: function(response) {
-//             response.photos.forEach(function(pic){
-//                 self.pictures.push(pic.images[0].url);
-//             });
-//             picList = '<ul class="pictures">';
-//             self.pictures.forEach(function(pic){
-//                 picList += '<li>';
-//                 picList += '<img class="thumbnails" src="' + pic + '" />';
-//                 picList += '</li>';
-//             });
-//             picList += '</ul>';
-//             self.infoWindow.setContent('<div id="infoWindow">' + location.title + picList + '</div>');
-//             self.infoWindow.open(model.map, location.marker);
-//         }
-//     });
-// }
-
 var controller = {
     initMapVariables: function(){
         this.infoWindow = new google.maps.InfoWindow(),
         model.map = new google.maps.Map(document.getElementById('map'), {
             center: model.athensCenter,
             zoom: 13,
-            // styles: styles,
             mapTypeControl: true
         });
 
@@ -169,7 +106,6 @@ var controller = {
         var wikiRequestTimeout = setTimeout(function(){
             controller.infoWindow.setContent('<div>failed to get wikipedia resources</div>');
         }, 8000);
-        console.log(wikiUrlLocation);
         var def = $.Deferred();
         $.ajax({
             url: wikiUrlLocation,
@@ -192,7 +128,7 @@ var controller = {
 
     fiveHundredPX: function(geolocation){
         var locationUrl = 'https://api.500px.com/v1/photos/search?image_size=2&' + 
-            'geo=' + geolocation.lat + ',' + geolocation.lng + ',1km'+
+            'geo=' + geolocation.lat + ',' + geolocation.lng + ',0.5km'+
             '&consumer_key=NS30nYHSifLg8tBHr00GbuZGvnr4iqX44lqB17Nn';//feature=popular&
         var data = '';
         var def = $.Deferred();
@@ -220,10 +156,6 @@ var controller = {
     populateInfoWindow: function(location) {
         var infoWindowContent = '';
         $.when(controller.fiveHundredPX(location.geolocation), controller.wikipediaRequest(location.title())).done(function(a1, a2){
-            // the code here will be executed when all four ajax requests resolve.
-            // a1, a2, a3 and a4 are lists of length 3 containing the response text,
-            // status, and jqXHR object for each of the four ajax calls respectively.
-
             infoWindowContent = '<div id="infoWindow">' + location.marker.title;
             infoWindowContent += a2;
             infoWindowContent += a1;
@@ -249,7 +181,7 @@ var ViewModel = function(){
     self.keyword = ko.observable('');
 
     self.selectLocation = function (clickedLocation) {
-        populateInfoWindow(clickedLocation.marker);
+        controller.populateInfoWindow(clickedLocation);
     };
 
     model.pointsOfInterest.forEach(function(locItem){
@@ -283,8 +215,6 @@ var ViewModel = function(){
     };
 
 };
-
-
 
 // This is called by the maps api as a callback
 function initApp() {
