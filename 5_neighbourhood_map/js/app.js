@@ -43,6 +43,7 @@ var Location = function(poi, id){
     self.lng = poi.lng;
     self.location = poi.location;
     self.visible = ko.observable(true);
+    self.instagramPics = ko.observableArray([]);
 
     // Get the position from the location array.
     var position = self.location;
@@ -132,6 +133,8 @@ var ViewModel = function() {
         });
     });
 
+    var accessToken = '7926454.f90bbad.467ffd88eff0449e938e87b4afb51980';
+    var instagrams = [];
     self.populateInfoWindow = function(marker){
         var wikiUrlLocation = model.wikiURL;
         wikiUrlLocation += marker.title;
@@ -163,6 +166,41 @@ var ViewModel = function() {
 
                 self.infoWindow.setContent('<div id="infoWindow">' + marker.title + info + '</div>');
                 clearTimeout(wikiRequestTimeout);
+            }
+        });
+        //accesstoken: 7926454.f90bbad.467ffd88eff0449e938e87b4afb51980
+        var locationUrl = 'https://api.instagram.com/v1/locations/search?lat=' +
+            37.971546 + '&lng=' +
+            23.726718 + '&distance=50&access_token=' +
+            accessToken;
+        $.ajax({
+            url: locationUrl,
+            type: "GET",
+            dataType: "jsonp",
+            cache: false,
+            success: function(response) {
+                console.log(response);
+                response.data.forEach(function(item){
+                    var mediaUrl = 'https://api.instagram.com/v1/locations/' + item.id +
+                    '/media/recent?access_token=' + accessToken;
+                    console.log(mediaUrl);
+                    var def = $.Deferred();
+                    $.ajax({
+                        type: "GET",
+                        dataType: "jsonp",
+                        cache: false,
+                        url: mediaUrl,
+                        success: function (results) {
+                            console.log(results);
+                            results.data.forEach(function (result) {
+                                instagrams.push(result);
+
+                            });
+                            def.resolve();
+                            //console.log(instagrams);
+                        }
+                    });
+                });
             }
         });
         self.infoWindow.open(map, marker);
