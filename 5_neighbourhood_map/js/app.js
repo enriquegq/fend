@@ -1,5 +1,5 @@
-var map;
-var athensCenter = {lat: 37.9715323, lng: 23.7235605};
+// var map;
+// var athensCenter = {lat: 37.9715323, lng: 23.7235605};
 
 // This function takes in a COLOR, and then creates a new marker
 // icon of that color. The icon will be 21 px wide by 34 high, have an origin
@@ -31,7 +31,12 @@ var model = {
         {title: 'Acropolis Museum', location: {lat: 37.968507, lng: 23.728523}},
         {title: 'Attiko Alsos', location: {lat: 38.0049804, lng: 23.76069}},
         {title: 'Academy of Athens', location: {lat: 37.979897, lng: 23.732562}}
-    ]
+    ],
+    map: '',
+    athensCenter: {lat: 37.9715323, lng: 23.7235605},
+    infoWindow: '',
+    keyword: '',
+    locations: ''
 };
 
 var Location = function(poi, id){
@@ -39,27 +44,29 @@ var Location = function(poi, id){
 
     self.id = id;
     self.title = ko.observable(poi.title);
-    self.lat = poi.lat;
-    self.lng = poi.lng;
-    self.location = poi.location;
+    self.geolocation = poi.location;
     self.visible = ko.observable(true);
     self.instagramPics = ko.observableArray([]);
 
     // Get the position from the location array.
-    var position = self.location;
+    var position = self.geolocation;
     var title = poi.title;
 
     // Create a marker per location, and put into markers array.
     self.marker = new google.maps.Marker({
         position: position,
         title: title,
-        map: map,
+        map: model.map,
         animation: google.maps.Animation.DROP,
         icon: defaultIcon,
         id: id
     });
 
-    map.bounds.extend(self.marker.position);
+    self.marker.addListener('click', function() {
+        controller.populateInfoWindow(self);
+    });
+
+    model.map.bounds.extend(self.marker.position);
 
     // Two event listeners - one for mouseover, one for mouseout,
     // to change the colors back and forth.
@@ -71,30 +78,172 @@ var Location = function(poi, id){
     });
 };
 
-function initMapVariables() {
-    map = new google.maps.Map(document.getElementById('map'), {
-        center: athensCenter,
-        zoom: 13,
-        // styles: styles,
-        mapTypeControl: true
-    });
+// function populateInfoWindow(location) {
+//     var wikiUrlLocation = model.wikiURL;
+//         wikiUrlLocation += location.title;
+//         wikiUrlLocation += model.wikiURLFormat;
 
-    // initialize bounds variable
-    map.bounds = new google.maps.LatLngBounds();
+//     var wikiArticle;
 
-    // ViewModel.infoWindow = new google.maps.InfoWindow();
+//     ViewModel.infoWindow.setContent('<div id="infoWindow">' + location.title + '</div>');
 
-    highlightedIcon = makeMarkerIcon('FFFF24');
-    defaultIcon = makeMarkerIcon('0091ff');
+//     var wikiRequestTimeout = setTimeout(function(){
+//         ViewModel.infoWindow.setContent('<div>failed to get wikipedia resources</div>');
+//     }, 8000);
 
+//     $.ajax({
+//         url: wikiUrlLocation,
+//         dataType: "jsonp",
+//         success: function(response) {
+//             var info = '<ul>';
+//             var articleList = response[1];
+//             for (var i=0; i<articleList.length; i++) {
+//                 wikiArticle = articleList[i];
+//                 var url = 'http://en.wikipedia.org/wiki/' + wikiArticle;
+//                 // $wikiElem.append(
+//                 //     '<li><a href="' + url + '">' + wikiArticle + '</a>'
+//                 // );
+//                 info += '<li><a href="' + url + '">' + wikiArticle + '</a>';
+//             }
+//             info += '</ul>';
+
+//             ViewModel.infoWindow.setContent('<div id="infoWindow">' + location.title + info + '</div>');
+//             clearTimeout(wikiRequestTimeout);
+//         }
+//     });
+//     //accesstoken: 7926454.f90bbad.467ffd88eff0449e938e87b4afb51980
+//     var locationUrl = 'https://api.500px.com/v1/photos/search?image_size=2&' + 
+//         'geo=37.971546,23.726718,1km'+
+//         '&consumer_key=NS30nYHSifLg8tBHr00GbuZGvnr4iqX44lqB17Nn';//feature=popular&
+
+//     self.pictures = [];
+//     $.ajax({
+//         url: locationUrl,
+//         type: "GET",
+//         success: function(response) {
+//             response.photos.forEach(function(pic){
+//                 self.pictures.push(pic.images[0].url);
+//             });
+//             picList = '<ul class="pictures">';
+//             self.pictures.forEach(function(pic){
+//                 picList += '<li>';
+//                 picList += '<img class="thumbnails" src="' + pic + '" />';
+//                 picList += '</li>';
+//             });
+//             picList += '</ul>';
+//             self.infoWindow.setContent('<div id="infoWindow">' + location.title + picList + '</div>');
+//             self.infoWindow.open(model.map, location.marker);
+//         }
+//     });
+// }
+
+var controller = {
+    initMapVariables: function(){
+        this.infoWindow = new google.maps.InfoWindow(),
+        model.map = new google.maps.Map(document.getElementById('map'), {
+            center: model.athensCenter,
+            zoom: 13,
+            // styles: styles,
+            mapTypeControl: true
+        });
+
+        // initialize bounds variable
+        model.map.bounds = new google.maps.LatLngBounds();
+
+        highlightedIcon = makeMarkerIcon('FFFF24');
+        defaultIcon = makeMarkerIcon('0091ff');
+    },
+
+    init: function(){
+        this.initMapVariables();
+        var i = 0;
+        model.infoWindow = new google.maps.InfoWindow();
+    },
+
+    wikipediaRequest: function(title){
+        var wikiUrlLocation = model.wikiURL;
+            wikiUrlLocation += title;
+            wikiUrlLocation += model.wikiURLFormat;
+        var wikiArticle;
+        var data = '';
+        var wikiRequestTimeout = setTimeout(function(){
+            controller.infoWindow.setContent('<div>failed to get wikipedia resources</div>');
+        }, 8000);
+        console.log(wikiUrlLocation);
+        var def = $.Deferred();
+        $.ajax({
+            url: wikiUrlLocation,
+            dataType: "jsonp",
+            success: function(response) {
+                data += '<ul>';
+                var articleList = response[1];
+                for (var i=0; i<articleList.length; i++) {
+                    wikiArticle = articleList[i];
+                    var url = 'http://en.wikipedia.org/wiki/' + wikiArticle;
+                    data += '<li><a href="' + url + '">' + wikiArticle + '</a></li>';
+                }
+                data += '</ul>';
+                def.resolve(data);
+                clearTimeout(wikiRequestTimeout);
+            }
+        });
+        return def.promise();
+    },
+
+    fiveHundredPX: function(geolocation){
+        var locationUrl = 'https://api.500px.com/v1/photos/search?image_size=2&' + 
+            'geo=' + geolocation.lat + ',' + geolocation.lng + ',1km'+
+            '&consumer_key=NS30nYHSifLg8tBHr00GbuZGvnr4iqX44lqB17Nn';//feature=popular&
+        var data = '';
+        var def = $.Deferred();
+        var pictures = [];
+        $.ajax({
+            url: locationUrl,
+            type: "GET",
+            success: function(response) {
+                response.photos.forEach(function(pic){
+                    pictures.push(pic.images[0].url);
+                });
+                data += '<ul class="pictures">';
+                pictures.forEach(function(pic){
+                    data += '<li>';
+                    data += '<img class="thumbnails" src="' + pic + '" />';
+                    data += '</li>';
+                });
+                data += '</ul>';
+                def.resolve(data);
+            }
+        });
+        return def.promise();
+    },
+
+    populateInfoWindow: function(location) {
+        var infoWindowContent = '';
+        $.when(controller.fiveHundredPX(location.geolocation), controller.wikipediaRequest(location.title())).done(function(a1, a2){
+            // the code here will be executed when all four ajax requests resolve.
+            // a1, a2, a3 and a4 are lists of length 3 containing the response text,
+            // status, and jqXHR object for each of the four ajax calls respectively.
+
+            infoWindowContent = '<div id="infoWindow">' + location.marker.title;
+            infoWindowContent += a2;
+            infoWindowContent += a1;
+            infoWindowContent += '</div>';
+            controller.infoWindow.setContent(infoWindowContent);
+            controller.infoWindow.open(model.map, location.marker);
+        });
+    },
+
+    resetMapAndVars(){
+        model.infoWindow.close();
+        model.map.setZoom(13);
+        model.map.setCenter(model.athensCenter);
+    }
 }
 
-var ViewModel = function() {
-    var self = this;
+var ViewModel = function(){
     var i = 0;
-    var bounds = new google.maps.LatLngBounds();
-
-    self.infoWindow = new google.maps.InfoWindow();
+    self.keyword = ko.observable('');
+    self.locations = ko.observableArray([]);
 
     self.locations = ko.observableArray([]);
     self.keyword = ko.observable('');
@@ -104,12 +253,7 @@ var ViewModel = function() {
     };
 
     model.pointsOfInterest.forEach(function(locItem){
-        var l = new Location(locItem, i);
-        // Create an onclick event to open the large infowindow at each marker.
-        l.marker.addListener('click', function() {
-            populateInfoWindow(this);
-        });
-        self.locations.push(l);
+        self.locations.push(new Location(locItem, i));
         i++;
     });
 
@@ -133,95 +277,17 @@ var ViewModel = function() {
         });
     });
 
-    var accessToken = '7926454.f90bbad.467ffd88eff0449e938e87b4afb51980';
-    var instagrams = [];
-    self.populateInfoWindow = function(marker){
-        var wikiUrlLocation = model.wikiURL;
-        wikiUrlLocation += marker.title;
-        wikiUrlLocation += model.wikiURLFormat;
-
-        var wikiArticle;
-
-        self.infoWindow.setContent('<div id="infoWindow">' + marker.title + '</div>');
-
-        var wikiRequestTimeout = setTimeout(function(){
-            self.infoWindow.setContent('<div>failed to get wikipedia resources</div>');
-        }, 8000);
-
-        $.ajax({
-            url: wikiUrlLocation,
-            dataType: "jsonp",
-            // jsonp: "callback",
-            success: function(response) {
-                var info = '';
-                var articleList = response[1];
-                for (var i=0; i<articleList.length; i++) {
-                    wikiArticle = articleList[i];
-                    var url = 'http://en.wikipedia.org/wiki/' + wikiArticle;
-                    // $wikiElem.append(
-                    //     '<li><a href="' + url + '">' + wikiArticle + '</a>'
-                    // );
-                    info += '<li><a href="' + url + '">' + wikiArticle + '</a>';
-                }
-
-                self.infoWindow.setContent('<div id="infoWindow">' + marker.title + info + '</div>');
-                clearTimeout(wikiRequestTimeout);
-            }
-        });
-        //accesstoken: 7926454.f90bbad.467ffd88eff0449e938e87b4afb51980
-        var locationUrl = 'https://api.instagram.com/v1/locations/search?lat=' +
-            37.971546 + '&lng=' +
-            23.726718 + '&distance=50&access_token=' +
-            accessToken;
-        $.ajax({
-            url: locationUrl,
-            type: "GET",
-            dataType: "jsonp",
-            cache: false,
-            success: function(response) {
-                console.log(response);
-                response.data.forEach(function(item){
-                    var mediaUrl = 'https://api.instagram.com/v1/locations/' + item.id +
-                    '/media/recent?access_token=' + accessToken;
-                    console.log(mediaUrl);
-                    var def = $.Deferred();
-                    $.ajax({
-                        type: "GET",
-                        dataType: "jsonp",
-                        cache: false,
-                        url: mediaUrl,
-                        success: function (results) {
-                            console.log(results);
-                            results.data.forEach(function (result) {
-                                instagrams.push(result);
-
-                            });
-                            def.resolve();
-                            //console.log(instagrams);
-                        }
-                    });
-                });
-            }
-        });
-        self.infoWindow.open(map, marker);
-    }
-
-    self.resetApp = function(){
-        self.keyword('');
-        self.infoWindow.close();
-        resetMap();
+    resetApp = function(){
+        this.keyword('');
+        controller.resetMapAndVars();
     };
 
 };
 
-function resetMap(){
-    map.setZoom(13);
-    map.setCenter(athensCenter);
-}
+
 
 // This is called by the maps api as a callback
 function initApp() {
-    initMapVariables();
-
+    controller.init();
     ko.applyBindings(ViewModel);
 }

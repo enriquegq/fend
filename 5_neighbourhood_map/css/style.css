@@ -104,3 +104,22 @@ hr {
     overflow: scroll;
     margin: 0 5px;
 }
+
+ul {
+    list-style: none;
+}
+
+ul.pictures {
+    width: 450px;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+ul.pictures li {
+    padding-right: 5px;
+}
+
+.thumbnails {
+    height: 100px;
+    width: 100px;
+}
