@@ -256,7 +256,7 @@ var controller = {
         model.map.setZoom(13);
         model.map.setCenter(model.athensCenter);
     }
-}
+};
 
 /**
  * App View which contains functions called by the UI components
