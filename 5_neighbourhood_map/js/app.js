@@ -145,8 +145,8 @@ var controller = {
         var wikiUrlLocation = model.wikiURL + title + model.wikiURLFormat;
 
         var wikiRequestTimeout = setTimeout(function(){
-            controller.infoWindow.setContent('<div>failed to get wikipedia resources</div>');
-        }, 8000);
+            def.reject();
+        }, 3000);
 
         var def = $.Deferred();
         $.ajax({
@@ -203,9 +203,20 @@ var controller = {
                 data += '</ul>';
                 def.resolve(data);
                 clearTimeout(requestTimeout);
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                def.reject();
             }
         });
         return def.promise();
+    },
+
+    toggleBounce: function (marker) {
+        if (marker.getAnimation() !== null) {
+          marker.setAnimation(null);
+        } else {
+          marker.setAnimation(google.maps.Animation.BOUNCE);
+        }
     },
 
     /**
@@ -215,15 +226,22 @@ var controller = {
      * @param {obj} location - The Location selected
      */
     populateInfoWindow: function(location) {
+        controller.toggleBounce(location.marker);
         var infoWindowContent = '';
-        $.when(controller.fiveHundredPX(location.geolocation), controller.wikipediaRequest(location.title())).done(function(a1, a2){
-            infoWindowContent = '<div id="infoWindow"><h1 class="locationTitle">' + location.marker.title + '</h1>';
-            infoWindowContent += '<h3>Wikipedia</h3>' + a2;
-            infoWindowContent += '<h3>500px</h3>' + a1;
-            infoWindowContent += '</div>';
-            controller.infoWindow.setContent(infoWindowContent);
+        $.when(controller.fiveHundredPX(location.geolocation), controller.wikipediaRequest(location.title())).done(
+            function(a1, a2){
+                infoWindowContent = '<div id="infoWindow"><h1 class="locationTitle">' + location.marker.title + '</h1>';
+                infoWindowContent += '<h3>Wikipedia</h3>' + a2;
+                infoWindowContent += '<h3>500px</h3>' + a1;
+                infoWindowContent += '</div>';
+                controller.infoWindow.setContent(infoWindowContent);
+                controller.infoWindow.open(model.map, location.marker);
+            }
+        ).fail(function(){
+            controller.infoWindow.setContent('<div>Request Failure</div>');
             controller.infoWindow.open(model.map, location.marker);
         });
+
     },
 
     /**
