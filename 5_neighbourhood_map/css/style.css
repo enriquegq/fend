@@ -119,6 +119,10 @@ ul {
     max-width: 500px;
 }
 
+ul.wikiLinks, ul.pictures {
+    padding-left: 10px;
+}
+
 ul.wikiLinks li {
     margin-bottom: 4px;
     display: inline-block;
