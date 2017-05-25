@@ -226,7 +226,11 @@ var controller = {
      * @param {obj} location - The Location selected
      */
     populateInfoWindow: function(location) {
-        controller.toggleBounce(location.marker);
+        if (this.currentLocation !== undefined){
+            controller.toggleBounce(this.currentLocation.marker);
+        }
+        this.currentLocation = location;
+        controller.toggleBounce(this.currentLocation.marker);
         var infoWindowContent = '';
         $.when(controller.fiveHundredPX(location.geolocation), controller.wikipediaRequest(location.title())).done(
             function(a1, a2){
