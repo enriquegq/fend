@@ -11,6 +11,6 @@ When one of the locations is clicked, a popup window will show up and display ad
 Also, you can find a collapsible menu showing the list of locations, and a search box which will filter the markers on the map.
 
 ## How to run
-To run this application download all of the files and open the index.html file and ensure your internet connection works properly, or the map will not load.
+To run this application download all of the files and open the index.html file. Ensure your internet connection works properly, or the map will not load.
 
 You can also check it out on github pages: https://enriquegq.github.io/fend/5_neighbourhood_map/
