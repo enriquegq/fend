@@ -111,12 +111,12 @@ var controller = {
             url: wikiUrlLocation,
             dataType: "jsonp",
             success: function(response) {
-                data += '<ul>';
+                data += '<ul class="wikiLinks">';
                 var articleList = response[1];
                 for (var i=0; i<articleList.length; i++) {
                     wikiArticle = articleList[i];
                     var url = 'http://en.wikipedia.org/wiki/' + wikiArticle;
-                    data += '<li><a href="' + url + '">' + wikiArticle + '</a></li>';
+                    data += '<li><a href="' + url + '">' + wikiArticle + '</a> | </li>';
                 }
                 data += '</ul>';
                 def.resolve(data);
@@ -155,9 +155,9 @@ var controller = {
     populateInfoWindow: function(location) {
         var infoWindowContent = '';
         $.when(controller.fiveHundredPX(location.geolocation), controller.wikipediaRequest(location.title())).done(function(a1, a2){
-            infoWindowContent = '<div id="infoWindow"><h1>' + location.marker.title + '</h1>';
-            infoWindowContent += a2;
-            infoWindowContent += a1;
+            infoWindowContent = '<div id="infoWindow"><h1 class="locationTitle">' + location.marker.title + '</h1>';
+            infoWindowContent += '<h3>Wikipedia</h3>' + a2;
+            infoWindowContent += '<h3>500px</h3>' + a1;
             infoWindowContent += '</div>';
             controller.infoWindow.setContent(infoWindowContent);
             controller.infoWindow.open(model.map, location.marker);

@@ -29,6 +29,14 @@ hr {
     border: none;
 }
 
+a {
+    text-decoration: none;
+}
+
+ul {
+    list-style: none;
+}
+
 #map {
     bottom:0px;
     height: 100%;
@@ -64,8 +72,7 @@ hr {
     margin-bottom: 0;
 }
 .options-box a {
-    text-decoration: none;
-    color: white;
+    color: #fff;
 }
 
 .header__hamburger{
@@ -81,10 +88,8 @@ hr {
     width: 320px;
     position: absolute;
     background-color: #fff;
-    /* This trasform moves the drawer off canvas. */
     -webkit-transform: translate(-300px, 0);
     transform: translate(-300px, 0);
-    /* Optionally, we animate the drawer. */
     transition: transform 0.3s ease;
 }
 
@@ -109,8 +114,17 @@ hr {
     max-height: 400px;
 }
 
-ul {
-    list-style: none;
+ul.wikiLinks li {
+    margin-bottom: 4px;
+    display: inline-block;
+}
+
+ul.wikiLinks a {
+    color: #005aff;
+    font-size: 14px;
+    font-weight: 400;
+    font-style: italic;
+    padding: 5px;
 }
 
 ul.pictures {
@@ -126,6 +140,10 @@ ul.pictures li {
 .thumbnails {
     height: 100px;
     width: 100px;
+}
+
+.locationTitle, h3 {
+    color: #005aff;
 }
 
 @media only screen and (max-width: 640px) {
