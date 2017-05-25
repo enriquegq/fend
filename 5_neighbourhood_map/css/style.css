@@ -112,6 +112,7 @@ ul {
 
 #infoWindow {
     max-height: 400px;
+    max-width: 500px;
 }
 
 ul.wikiLinks li {
@@ -146,7 +147,7 @@ ul.pictures li {
     color: #005aff;
 }
 
-@media only screen and (max-width: 640px) {
+@media only screen and (max-width: 750px) {
     #infoWindow {
         max-width: 300px;
     }

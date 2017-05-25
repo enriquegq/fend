@@ -15,46 +15,35 @@
     </head>
     <body>
         <div class="container">
-            <div class="options-box">
+            <div class="options-box open">
                 <a id="hamburger" class="header__hamburger" href="#">☰</a>
-                <!-- <div id="search-container"> -->
-                    <h1>Discover Athens (Αθήνα)</h1>
-                    <div id="search-nav">
-                        <input id="locationInput" placeholder="Search…" type="input" data-bind="textInput: keyword, valueUpdate: 'keydown'" autocomplete="off"></input>
-                        <a href="#" data-bind="click: resetApp">
-                            <i class="fa fa-refresh" aria-hidden="true"></i>
-                        </a>
-                        <div id="scroller">
-                            <ul class="locations" data-bind="foreach: filteredLocations">
-                                <div data-bind="visible: visible">
-                                    <a href="#" data-bind="click: selectLocation">
-                                        <li>
-                                            <strong data-bind="text: $data.title"></strong>
-                                        </li>
-                                    </a>
-                                </div>
-                            </ul>
-                        </div>
-                    <!-- </div> -->
-                    <script>
-                        /*
-                           * Open the drawer when the menu ison is clicked.
-                           */
-                          var menu = document.querySelector('#hamburger');
-                          var drawer = document.querySelector('.options-box');
-
-                          menu.addEventListener('click', function(e) {
-                            drawer.classList.toggle('open');
-                            e.stopPropagation();
-                          });
-                    </script>
+                <h1>Discover Athens (Αθήνα)</h1>
+                <div id="search-nav">
+                    <input id="locationInput" placeholder="Search…" type="input"
+                        data-bind="textInput: keyword, valueUpdate: 'keydown'"
+                        autocomplete="off" />
+                    <a href="#" data-bind="click: resetApp">
+                        <i class="fa fa-refresh" aria-hidden="true"></i>
+                    </a>
+                    <div id="scroller">
+                        <ul class="locations" data-bind="foreach: filteredLocations">
+                            <div data-bind="visible: visible">
+                                <a href="#" data-bind="click: selectLocation">
+                                    <li>
+                                        <strong data-bind="text: $data.title"></strong>
+                                    </li>
+                                </a>
+                            </div>
+                        </ul>
+                    </div>
                 </div>
             </div>
             <div id="map"></div>
         </div>
     </body>
+
+    <!-- JS libraries/scripts -->
     <script src="js/libs/knockout-3.4.2.js"></script>
-    <!-- Google Maps API -->
     <script async defer src=
         "https://maps.googleapis.com/maps/api/js?key=AIzaSyBJcpM1INjUtJvxz8_Td8lZt9gA1UdCVkI&libraries=geometry&v=3&callback=initApp">
     </script>

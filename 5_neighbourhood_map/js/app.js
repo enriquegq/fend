@@ -11,16 +11,20 @@ function makeMarkerIcon(markerColor) {
     new google.maps.Size(21,34));
     return markerImage;
 }
-// Style the markers a bit. This will be our listing marker icon.
-var defaultIcon;
 
-// Create a "highlighted location" marker color for when the user
-// mouses over the marker.
-var highlightedIcon;
-
+/**
+ * App Model with basic variables to use:
+ *
+ * Wikipedia and 500px URLs
+ * Points Of Interest for Google Maps
+ * Google Maps Map variable
+ */
 var model = {
     wikiURL: 'https://en.wikipedia.org/w/api.php?action=opensearch&search=',
     wikiURLFormat: '&format=json&callback=wikiCallback',
+    fiveHundredURL: 'https://api.500px.com/v1/photos/search?image_size=2&geo=',
+    fiveHundredURL2: '&consumer_key=NS30nYHSifLg8tBHr00GbuZGvnr4iqX44lqB17Nn',
+    fiveHunderedPXURL: 'https://500px.com',
     pointsOfInterest: [
         {title: 'The Porch of the Caryatids', location: {lat: 37.972020, lng: 23.726464}},
         {title: 'Parthenon', location: {lat: 37.971546, lng: 23.726718}},
@@ -30,12 +34,16 @@ var model = {
         {title: 'Academy of Athens', location: {lat: 37.979897, lng: 23.732562}}
     ],
     map: '',
-    athensCenter: {lat: 37.9715323, lng: 23.7235605},
-    infoWindow: '',
-    keyword: '',
-    locations: ''
+    athensCenter: {lat: 37.9715323, lng: 23.7235605}
 };
 
+/**
+ * Location class
+ * Contains all the information related to a concrete location
+ *
+ * @param {array} poi - Point Of Interest from the model, containing title and location
+ * @param {number} id - Location id
+ */
 var Location = function(poi, id){
     var self = this;
 
@@ -43,22 +51,21 @@ var Location = function(poi, id){
     self.title = ko.observable(poi.title);
     self.geolocation = poi.location;
     self.visible = ko.observable(true);
-    self.instagramPics = ko.observableArray([]);
 
-    // Get the position from the location array.
     var position = self.geolocation;
     var title = poi.title;
 
-    // Create a marker per location, and put into markers array.
+    // Create a marker per location
     self.marker = new google.maps.Marker({
         position: position,
         title: title,
         map: model.map,
         animation: google.maps.Animation.DROP,
-        icon: defaultIcon,
+        icon: controller.defaultIcon,
         id: id
     });
 
+    // Event listener to show the information when the user clicks on a marker
     self.marker.addListener('click', function() {
         controller.populateInfoWindow(self);
     });
@@ -68,14 +75,21 @@ var Location = function(poi, id){
     // Two event listeners - one for mouseover, one for mouseout,
     // to change the colors back and forth.
     self.marker.addListener('mouseover', function() {
-        this.setIcon(highlightedIcon);
+        this.setIcon(controller.highlightedIcon);
     });
     self.marker.addListener('mouseout', function() {
-        this.setIcon(defaultIcon);
+        this.setIcon(controller.defaultIcon);
     });
 };
 
+/**
+ * App Controller with basic functions used by View and Location class
+ */
 var controller = {
+    /**
+     * Function which initializes all variables related to the map and the map
+     * itself
+     */
     initMapVariables: function(){
         this.infoWindow = new google.maps.InfoWindow(),
         model.map = new google.maps.Map(document.getElementById('map'), {
@@ -87,25 +101,37 @@ var controller = {
         // initialize bounds variable
         model.map.bounds = new google.maps.LatLngBounds();
 
-        highlightedIcon = makeMarkerIcon('FFFF24');
-        defaultIcon = makeMarkerIcon('0091ff');
+        // Style the markers a bit. This will be our listing marker icon.
+        this.highlightedIcon = makeMarkerIcon('FFFF24');
+
+        // Create a "highlighted location" marker color for when the user
+        // mouses over the marker.
+        this.defaultIcon = makeMarkerIcon('0091ff');
     },
 
+    /**
+     * Function which initializes the whole App
+     */
     init: function(){
         this.initMapVariables();
         var i = 0;
-        model.infoWindow = new google.maps.InfoWindow();
     },
 
+    /**
+     * Function which makes a request to Wikipedia API for articles related to the
+     * location selected
+     *
+     * @param {text} title - Location title to search articles related
+     */
     wikipediaRequest: function(title){
-        var wikiUrlLocation = model.wikiURL;
-            wikiUrlLocation += title;
-            wikiUrlLocation += model.wikiURLFormat;
         var wikiArticle;
         var data = '';
+        var wikiUrlLocation = model.wikiURL + title + model.wikiURLFormat;
+
         var wikiRequestTimeout = setTimeout(function(){
             controller.infoWindow.setContent('<div>failed to get wikipedia resources</div>');
         }, 8000);
+
         var def = $.Deferred();
         $.ajax({
             url: wikiUrlLocation,
@@ -113,10 +139,15 @@ var controller = {
             success: function(response) {
                 data += '<ul class="wikiLinks">';
                 var articleList = response[1];
-                for (var i=0; i<articleList.length; i++) {
-                    wikiArticle = articleList[i];
-                    var url = 'http://en.wikipedia.org/wiki/' + wikiArticle;
-                    data += '<li><a href="' + url + '">' + wikiArticle + '</a> | </li>';
+                if (articleList.length == 0){
+                    data += '<li>No articles</li>';
+                }
+                else{
+                    for (var i=0; i<articleList.length; i++) {
+                        wikiArticle = articleList[i];
+                        var url = 'http://en.wikipedia.org/wiki/' + wikiArticle;
+                        data += '<li><a href="' + url + '">' + wikiArticle + '</a> | </li>';
+                    }
                 }
                 data += '</ul>';
                 def.resolve(data);
@@ -126,32 +157,47 @@ var controller = {
         return def.promise();
     },
 
+    /**
+     * Function which makes a request to 500px API to get pictures related to
+     * the location selected
+     *
+     * @param {array} geolocation - Location latitud and longitude
+     */
     fiveHundredPX: function(geolocation){
-        var locationUrl = 'https://api.500px.com/v1/photos/search?image_size=2&' + 
-            'geo=' + geolocation.lat + ',' + geolocation.lng + ',0.5km'+
-            '&consumer_key=NS30nYHSifLg8tBHr00GbuZGvnr4iqX44lqB17Nn';//feature=popular&
-        var fiveHunderedPXURL = 'https://500px.com';
+        var locationUrl = model.fiveHundredURL +
+            geolocation.lat + ',' + geolocation.lng + ',0.5km'+
+            model.fiveHundredURL2;//feature=popular&
+
         var data = '';
+        var requestTimeout = setTimeout(function(){
+            controller.infoWindow.setContent('<div>failed to get 500px resources</div>');
+        }, 8000);
         var def = $.Deferred();
         var pictures = [];
         $.ajax({
             url: locationUrl,
             type: "GET",
             success: function(response) {
-                console.log(response);
                 data += '<ul class="pictures">';
                 response.photos.forEach(function(pic){
-                    data += '<li><a href="' + fiveHunderedPXURL + pic.url + '" alt="' + pic.name + '" >';
+                    data += '<li><a href="' + model.fiveHunderedPXURL + pic.url + '" alt="' + pic.name + '" >';
                     data += '<img class="thumbnails" src="' + pic.image_url + '" />';
                     data += '</a></li>';
                 });
                 data += '</ul>';
                 def.resolve(data);
+                clearTimeout(requestTimeout);
             }
         });
         return def.promise();
     },
 
+    /**
+     * Function which calls the two functions which call the APIs and set up the
+     * content in the Info Window
+     *
+     * @param {obj} location - The Location selected
+     */
     populateInfoWindow: function(location) {
         var infoWindowContent = '';
         $.when(controller.fiveHundredPX(location.geolocation), controller.wikipediaRequest(location.title())).done(function(a1, a2){
@@ -164,13 +210,20 @@ var controller = {
         });
     },
 
+    /**
+     * Function which resets the map to the center and closes the info window
+     */
     resetMapAndVars(){
-        model.infoWindow.close();
+        controller.infoWindow.close();
         model.map.setZoom(13);
         model.map.setCenter(model.athensCenter);
     }
 }
 
+/**
+ * App View which contains functions called by the UI components
+ *
+ */
 var ViewModel = function(){
     var i = 0;
     self.keyword = ko.observable('');
@@ -179,14 +232,20 @@ var ViewModel = function(){
     self.locations = ko.observableArray([]);
     self.keyword = ko.observable('');
 
-    self.selectLocation = function (clickedLocation) {
-        controller.populateInfoWindow(clickedLocation);
-    };
-
     model.pointsOfInterest.forEach(function(locItem){
         self.locations.push(new Location(locItem, i));
         i++;
     });
+
+    /**
+     * Function which shows the info window once the location is clicked on the
+     * list of possible locations
+     *
+     * @param {obj} clickedLocation - The Location selected
+     */
+    self.selectLocation = function (clickedLocation) {
+        controller.populateInfoWindow(clickedLocation);
+    };
 
     // compute the list of locations filtered by the searchTerm
     self.filteredLocations = ko.computed(function() {
@@ -217,6 +276,18 @@ var ViewModel = function(){
 
 // This is called by the maps api as a callback
 function initApp() {
+    if($(window).width() <=1000) $('.options-box').removeClass('open');
+
+    /*
+     * Open the drawer when the menu ison is clicked.
+     */
+    var drawer = document.querySelector('#hamburger');
+    var menu = document.querySelector('.options-box');
+
+    drawer.addEventListener('click', function(e) {
+        menu.classList.toggle('open');
+        e.stopPropagation();
+    });
     controller.init();
     ko.applyBindings(ViewModel);
 }
