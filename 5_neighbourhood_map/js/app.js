@@ -293,18 +293,8 @@ var ViewModel = function(){
 
 // This is called by the maps api as a callback
 function initApp() {
-    if($(window).width() <=1000) $('#collapsibleMenu').removeClass('open');
+    if (window.innerWidth <=1000) document.getElementById('collapsibleMenu').classList.remove('open');
 
-    /*
-     * Open the drawer when the menu ison is clicked.
-     */
-    // var drawer = document.getElementById('hamburger');
-    // var menu = document.getElementById('collapsibleMenu');
-
-    // drawer.addEventListener('click', function(e) {
-    //     menu.classList.toggle('open');
-    //     e.stopPropagation();
-    // });
     controller.init();
     ko.applyBindings(ViewModel);
 }
