@@ -155,7 +155,7 @@ var controller = {
     populateInfoWindow: function(location) {
         var infoWindowContent = '';
         $.when(controller.fiveHundredPX(location.geolocation), controller.wikipediaRequest(location.title())).done(function(a1, a2){
-            infoWindowContent = '<div id="infoWindow">' + location.marker.title;
+            infoWindowContent = '<div id="infoWindow"><h1>' + location.marker.title + '</h1>';
             infoWindowContent += a2;
             infoWindowContent += a1;
             infoWindowContent += '</div>';
