@@ -27,7 +27,7 @@
                 <div id="search-nav">
                     <input id="locationInput" placeholder="Search…" type="input"
                         data-bind="textInput: keyword, valueUpdate: 'keydown'"
-                        autocomplete="off" />
+                        autocomplete="off"></input>
                     <a href="#" data-bind="click: resetApp">
                         <i class="fa fa-refresh" aria-hidden="true"></i>
                     </a>
@@ -59,8 +59,8 @@
     <!-- JS libraries/scripts -->
     <script src="js/libs/knockout-3.4.2.js"></script>
     <script src="js/app.js"></script>
+    <script src="js/libs/jquery.min.js"></script>
     <script async defer src=
         "https://maps.googleapis.com/maps/api/js?key=AIzaSyBJcpM1INjUtJvxz8_Td8lZt9gA1UdCVkI&libraries=geometry&v=3&callback=initApp" onerror="gmErrorHandler()">
     </script>
-    <script src="js/libs/jquery.min.js"></script>
 </html>
