@@ -181,7 +181,7 @@ var controller = {
      */
     fiveHundredPX: function(geolocation){
         var locationUrl = model.fiveHundredURL +
-            geolocation.lat + ',' + geolocation.lng + ',0.5km'+
+            geolocation.lat + ',' + geolocation.lng + ',1km'+
             model.fiveHundredURL2;//feature=popular&
 
         var data = '';
