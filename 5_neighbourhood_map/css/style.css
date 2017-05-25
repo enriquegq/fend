@@ -105,6 +105,10 @@ hr {
     margin: 0 5px;
 }
 
+#infoWindow {
+    max-height: 400px;
+}
+
 ul {
     list-style: none;
 }
@@ -122,4 +126,19 @@ ul.pictures li {
 .thumbnails {
     height: 100px;
     width: 100px;
+}
+
+@media only screen and (max-width: 640px) {
+    #infoWindow {
+        max-width: 300px;
+    }
+
+    ul.pictures {
+        width: 240px;
+    }
+
+    ul.pictures li {
+        padding-right: 15px;
+        padding-bottom: 5px;
+    }
 }

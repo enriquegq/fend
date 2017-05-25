@@ -130,6 +130,7 @@ var controller = {
         var locationUrl = 'https://api.500px.com/v1/photos/search?image_size=2&' + 
             'geo=' + geolocation.lat + ',' + geolocation.lng + ',0.5km'+
             '&consumer_key=NS30nYHSifLg8tBHr00GbuZGvnr4iqX44lqB17Nn';//feature=popular&
+        var fiveHunderedPXURL = 'https://500px.com';
         var data = '';
         var def = $.Deferred();
         var pictures = [];
@@ -137,14 +138,12 @@ var controller = {
             url: locationUrl,
             type: "GET",
             success: function(response) {
-                response.photos.forEach(function(pic){
-                    pictures.push(pic.images[0].url);
-                });
+                console.log(response);
                 data += '<ul class="pictures">';
-                pictures.forEach(function(pic){
-                    data += '<li>';
-                    data += '<img class="thumbnails" src="' + pic + '" />';
-                    data += '</li>';
+                response.photos.forEach(function(pic){
+                    data += '<li><a href="' + fiveHunderedPXURL + pic.url + '" alt="' + pic.name + '" >';
+                    data += '<img class="thumbnails" src="' + pic.image_url + '" />';
+                    data += '</a></li>';
                 });
                 data += '</ul>';
                 def.resolve(data);
