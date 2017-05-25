@@ -114,7 +114,23 @@ var controller = {
      */
     init: function(){
         this.initMapVariables();
-        var i = 0;
+        /*
+         * Open the drawer when the menu ison is clicked.
+         */
+        var drawer = document.getElementById('hamburger');
+        this.menu = document.getElementById('collapsibleMenu');
+        var self = this;
+        drawer.addEventListener('click', function(e) {
+            self.menu.classList.toggle('open');
+            e.stopPropagation();
+        });
+    },
+
+    /**
+     * Function which collapses/expands the menu
+     */
+    toggleMenu: function() {
+        controller.menu.classList.toggle('open');
     },
 
     /**
@@ -245,6 +261,7 @@ var ViewModel = function(){
      */
     self.selectLocation = function (clickedLocation) {
         controller.populateInfoWindow(clickedLocation);
+        controller.toggleMenu();
     };
 
     // compute the list of locations filtered by the searchTerm
@@ -276,18 +293,18 @@ var ViewModel = function(){
 
 // This is called by the maps api as a callback
 function initApp() {
-    if($(window).width() <=1000) $('.options-box').removeClass('open');
+    if($(window).width() <=1000) $('#collapsibleMenu').removeClass('open');
 
     /*
      * Open the drawer when the menu ison is clicked.
      */
-    var drawer = document.querySelector('#hamburger');
-    var menu = document.querySelector('.options-box');
+    // var drawer = document.getElementById('hamburger');
+    // var menu = document.getElementById('collapsibleMenu');
 
-    drawer.addEventListener('click', function(e) {
-        menu.classList.toggle('open');
-        e.stopPropagation();
-    });
+    // drawer.addEventListener('click', function(e) {
+    //     menu.classList.toggle('open');
+    //     e.stopPropagation();
+    // });
     controller.init();
     ko.applyBindings(ViewModel);
 }
