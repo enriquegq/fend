@@ -87,7 +87,7 @@ Player.prototype.update = function() {
 
 // Updates the position of the player based on a normal movement or a victory
 Player.prototype.move = function (x, y) {
-    if (y+OFFSET == 0) {
+    if (y+OFFSET === 0) {
         this.win();
     }
     else {
