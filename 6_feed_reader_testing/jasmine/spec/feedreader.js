@@ -111,8 +111,27 @@ $(function() {
          * by the loadFeed function that the content actually changes.
          * Remember, loadFeed() is asynchronous.
          */
-        it('is hidden by default', function() {
-            
+        var initialFeedList;
+
+        beforeAll(function(done){
+            loadFeed(0, function(){
+                initialFeedList = $('.feed .entry');
+                done();
+            });
+        });
+
+        beforeEach(function(done){
+            loadFeed(3, function(){
+                done();
+            });
+        });
+
+        it('is changing the content', function(done) {
+            var feedList = $('.feed .entry');
+            console.log(feedList.first().text());
+            console.log(initialFeedList.first().text());
+            expect(feedList.first().text()).not.toBe(initialFeedList.first().text());
+            done();
         });
     });
 }());
