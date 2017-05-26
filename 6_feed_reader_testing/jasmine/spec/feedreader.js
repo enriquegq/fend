@@ -31,26 +31,28 @@ $(function() {
          * in the allFeeds object and ensures it has a URL defined
          * and that the URL is not empty.
          */
-        for(var i = 0; i < allFeeds.length; i++) {
-            var item = allFeeds[i];
-            it(item.name + ' contains URL and it is not empty', function() {
+        var i;
+        var item;
+        it('contain URL and it is not empty', function() {
+            for(i = 0; i < allFeeds.length; i++) {
+                item = allFeeds[i];
                 expect(item.url).toBeDefined();
                 expect(item.url).not.toBe('');
-            });
-        }
+            }
+        });
 
 
         /* TODO: Write a test that loops through each feed
          * in the allFeeds object and ensures it has a name defined
          * and that the name is not empty.
          */
-        for(var i = 0; i < allFeeds.length; i++) {
-            var item = allFeeds[i];
-            it(item.name + ' contains name and it is not empty', function() {
+        it('contains name and it is not empty', function() {
+            for(i = 0; i < allFeeds.length; i++) {
+                item = allFeeds[i];
                 expect(item.name).toBeDefined();
                 expect(item.name).not.toBe('');
-            });
-        }
+            }
+        });
     });
 
     /* TODO: Write a new test suite named "The menu" */
@@ -98,7 +100,7 @@ $(function() {
         it('are loaded inside the feed', function(done) {
             var container = $('.feed');
             var entries = $('.feed').children();
-            var entry = undefined;
+            var entry;
             entry = $(".feed").find(".entry");
             expect(entry).not.toBe(undefined);
             done();
