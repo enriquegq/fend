@@ -5,8 +5,7 @@ In this project you are given a web-based application that reads RSS feeds. The 
 
 ## Running instructions
 
-You can view an online version of this project at
-[https://enriquegq.github.io/fend/6_feed_reader_testing](https://enriquegq.github.io/fend/6_feed_reader_testing)
+Download the project and open **index.html**
 
 ## Why this Project?
 
